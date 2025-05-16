@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Simple Flask App - Login</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+    <style>
+      footer{
+        color: black;
+      }
+      html{
+        background-image: url("{{ url_for('static', filename='images/bg6.jpg') }}");
+         background-size: 100% 100%;          
+             background-position: center;  
+             background-repeat: no-repeat;        
+             background-attachment: fixed;
+      }
+      header a{
+        color: #e9ffe4;
+      }
+      header a:hover{
+        color: #008000;
+        opacity: 2s;
+      }
+      button:hover{
+        background-color: #008000;
+        opacity: 3s;
+      }
+      
+    </style>
+  </head>
+  <body>
+    <header>
+      <nav>
+        <ul>
+          <li><a href="{{ url_for('index') }}">Home</a></li>
+          <li><a href="{{ url_for('trymodel') }}">Test</a></li>
+          <li><a href="{{ url_for('account') }}">Account</a></li>
+        </ul>
+      </nav>
+    </header>
+    <main class="login-page form_container">
+      <!-- From Uiverse.io by nathann09 -->
+      <form class="form" method="POST" action="{{ url_for('login') }}">
+        <p class="form-title" >LOGIN🌿</p>
+        {% with messages = get_flashed_messages(category_filter=['success']) %}
+        {% if messages %}
+          <ul class="flashed-messages">
+          {% for message in messages %}
+            <li class="success">{{ message }}!</li>
+          {% endfor %}
+          </ul>
+        {% endif %}
+        {% endwith %}
+        <div class="input-container">
+          <input type="text" name="username" id="username" placeholder="Enter username" required//>
+          <span> </span>
+        </div>
+        <div class="input-container">
+          <input type="password" name="password" id="password" placeholder="Enter password" required//>
+        </div>
+        {% with messages = get_flashed_messages(category_filter=['error']) %}
+        {% if messages %}
+          <ul class="flashed-messages">
+          {% for message in messages %}
+            <li class="error">{{ message }}!</li>
+          {% endfor %}
+          </ul>
+        {% endif %}
+        {% endwith %}
+        <button type="submit" class="submit">Sign in</button>
+
+        <p class="signup-link">
+          No account?
+          <a href="{{ url_for('signup') }}">Sign up</a>
+        </p>
+      </form>
+    </main>
+    <footer>
+      <p>&copy; 2025 Flask App</p>
+    </footer>
+  </body>
+</html>

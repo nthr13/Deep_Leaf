@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Simple Flask App - About</title>
+    <link href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@700&family=Montserrat&display=swap" rel="stylesheet">
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+    <style>
+
+      header a{
+       height: 80px;
+       font-size: 23px;
+       margin: 25px;
+      color: #dbfde4;
+        
+      }
+      header{
+        background-color: #108532;
+      }
+      h1{
+         color: #b8faca;
+          margin-bottom: 20px;
+          font-size: 55px;
+          margin-top: 50px;
+          font-family: 'Amatic SC', cursive;
+          text-align: center;
+          color: #115626;
+      }
+     body{
+      background-color: #dbfde4;
+     }
+    .upload-section input{
+      background-color: #dbfde4;
+
+    }
+    </style>
+  </head>
+  <body>
+    
+    <header>
+      <nav>
+        <ul>
+          <li><a href="{{ url_for('index') }}">Home</a></li>
+          <li><a href="{{ url_for('trymodel') }}">Test</a></li>
+          <li><a href="{{ url_for('account') }}">Account</a></li>
+        </ul>
+      </nav>
+    </header>
+    <main class="translate-page">
+      <h1>Deep-Leaf Diseases Detector 🌿</h1>
+      <div class="translate-container">
+        <div class="input-section">
+          <div class="upload-section">
+            <label for="image-upload">Upload an image:</label>
+            <input type="file" id="image-upload" accept="image/*" />
+          </div>
+        </div>
+
+        <div class="output-section">
+          <div>
+            <label for="recognized-text">Recognized Disease:</label>
+            <textarea
+              class="recognized-text"
+              id="recognized-text"
+              readonly
+              placeholder="Detected diseases from the image will appear here"
+            ></textarea>
+          </div>
+          <div class="process-button">
+            <button id="process-image">
+              Process<span></span>
+            </button>
+            <div class="spinner"></div>
+          </div>
+        </div>
+      </div>
+    </main>
+    
+
+    <script>
+      const imageUpload = document.getElementById("image-upload");
+      const recognizedTextarea = document.getElementById("recognized-text");
+      const processImageButton = document.getElementById("process-image");
+      const translationOutputDiv =
+        document.getElementById("translation-output");
+      let uploadedImageFile = null;
+
+  
+
+
+
+      imageUpload.addEventListener("change", (event) => {
+        const file = event.target.files[0];
+        if (file) {
+          uploadedImageFile = file;
+        }
+      });
+
+      processImageButton.addEventListener("click", async () => {
+        // Disable the button and show the spinner
+        processImageButton.textContent = "Processing...";
+        processImageButton.disabled = true;
+        const spinner = document.querySelector(".spinner");
+        if (spinner) {
+          spinner.style.display = "inline-block";
+        }
+
+        let formData = new FormData();
+
+        if (uploadedImageFile) {
+          formData.append("image_file", uploadedImageFile);
+        } else {
+          alert("Please capture an image or upload one.");
+          processImageButton.textContent = "Process";
+          processImageButton.disabled = false;
+          if (spinner) {
+            spinner.style.display = "none";
+          }
+          return;
+        }
+
+        try {
+          console.log("Sending image data to server...");
+          const response = await fetch("/trymodel", {
+            method: "POST",
+            body: formData,
+          });
+          const data = await response.json();
+
+          let displayText = "";
+          if (data.predictions && data.predictions.length > 0) {
+            data.predictions.forEach(prediction => {
+              displayText += `Disease: ${prediction.class}\nConfidence: ${prediction.confidence.toFixed(4)}\n\n`;
+            });
+          } else {
+            displayText = "No diseases detected in the image.";
+          }
+          recognizedTextarea.value = displayText.trim(); // Set the formatted text to the textarea
+
+          console.log("Response:", data);
+          processImageButton.textContent = "Process";
+          processImageButton.disabled = false;
+          if (spinner) {
+            spinner.style.display = "none";
+          }
+          imageUpload.value = null; // Reset the file input
+        } catch (error) {
+          console.error("Error processing image:", error);
+          alert("Failed to process the image.");
+          processImageButton.textContent = "Process and Translate";
+          processImageButton.disabled = false;
+          if (spinner) {
+            spinner.style.display = "none";
+          }
+          // Optionally clear UI elements on error as well
+          capturedImageBase64 = null;
+          if (cameraFeed.srcObject) {
+            cameraFeed.srcObject
+              .getVideoTracks()
+              .forEach((track) => track.stop());
+            cameraFeed.srcObject = null;
+          }
+          imageUpload.value = ""; // Reset the file input
+        }
+      });
+    </script>
+  </body>
+</html>

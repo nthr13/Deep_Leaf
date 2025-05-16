@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Flask App - Sign Up</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<style>
+  html{
+    background-color: #ccffc4;
+  }
+  header a{
+    color: #0b5c0d;
+    margin: 25px;
+    
+  }
+  header{
+    background-color: #5fff50;
+  }
+ 
+  
+</style>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="{{ url_for('index') }}">Home</a></li>
+                <li><a href="{{ url_for('trymodel') }}">Test</a></li>
+                <li><a href="{{ url_for('account') }}">Account</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main class="signup-page form_container">
+        <form class="form" method="POST" action="{{ url_for('signup') }}">
+            <p class="form-title">Create an Account</p>
+            <div class="input-container">
+              <input type="text" name="username" id="username" placeholder="Enter username" required/>
+              <span> </span>
+            </div>
+            <div class="input-container">
+              <input type="password" name="password" id="password" placeholder="Enter password" required/>
+            </div>
+            <div class="input-container">
+                <input type="password" name="confirm_password" id="confirm_password" placeholder="Confirm password" required/>
+            </div>
+            {% with messages = get_flashed_messages(category_filter=['error']) %}
+            {% if messages %}
+              <ul class="flashed-messages">
+              {% for message in messages %}
+                <li class="error">{{ message }}!</li>
+              {% endfor %}
+              </ul>
+            {% endif %}
+            {% endwith %}
+            <button type="submit" class="submit">Sign Up</button>
+    
+            <p class="signup-link">
+              Already have an account?
+              <a href="{{ url_for('login') }}">Sign in here</a>
+            </p>
+          </form>
+    </main>
+    <footer>
+        <p>&copy; 2025 Flask App</p>
+    </footer>
+</body>
+</html>
